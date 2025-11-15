@@ -1,0 +1,30 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: gemma2-2b-it
+  namespace: default
+  annotations:
+    serving.kserve.io/deploymentMode: "RawDeployment"
+spec:
+  predictor:
+    minReplicas: 1
+    containers:
+    - name: kserve-container
+      image: ollama/ollama:latest
+      command: ["/bin/sh", "-c"]
+      args:
+      - |
+        ollama serve &
+        sleep 5
+        ollama pull gemma2:2b
+        wait
+      ports:
+      - containerPort: 11434
+        protocol: TCP
+      resources:
+        limits:
+          cpu: "3"
+          memory: 6Gi
+        requests:
+          cpu: "2"
+          memory: 4Gi

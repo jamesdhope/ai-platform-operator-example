@@ -1,0 +1,9 @@
+apiVersion: platform.ai-platform.io/v1alpha1
+kind: KServeDeployment
+metadata:
+  name: kserve-minimal
+  namespace: default
+spec:
+  version: "v0.11.0"
+  components:
+    - kserve
