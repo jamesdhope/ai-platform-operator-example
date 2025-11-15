@@ -1,5 +1,5 @@
 IMAGE_TAG ?= latest
-IMG ?= ai-platform-operator:$(IMAGE_TAG)
+IMG ?= jamesdhope/ai-platform-operator:$(IMAGE_TAG)
 
 .PHONY: help
 help: ## Display this help
@@ -30,12 +30,18 @@ uninstall: ## Uninstall CRDs from the cluster
 	kubectl delete -f config/crd/
 
 .PHONY: deploy
-deploy: ## Deploy the operator to the cluster
-	kubectl apply -f config/deployment/
+deploy: install ## Deploy the operator to the cluster
+	kubectl apply -f config/rbac/
+	kubectl apply -f config/manager/
 
 .PHONY: undeploy
 undeploy: ## Undeploy the operator from the cluster
-	kubectl delete -f config/deployment/
+	kubectl delete -f config/manager/
+	kubectl delete -f config/rbac/
+
+.PHONY: deploy-sample
+deploy-sample: ## Deploy sample KServeDeployment
+	kubectl apply -f config/operand/kserve-minimal.yaml
 
 .PHONY: test
 test: ## Run tests

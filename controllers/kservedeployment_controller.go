@@ -295,7 +295,7 @@ func (r *KServeDeploymentReconciler) deployInferenceService(ctx context.Context)
 	logger.Info("Deploying InferenceService from manifest")
 	
 	// Apply the InferenceService manifest
-	manifestPath := "config/samples/gemma2-inferenceservice.yaml"
+	manifestPath := "config/operand/gemma2-inferenceservice.yaml"
 	if err := r.applyManifestFile(ctx, manifestPath); err != nil {
 		logger.Error(err, "Failed to apply InferenceService manifest")
 		return err

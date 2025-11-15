@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ai-platform-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-platform-operator
+  namespace: ai-platform-system
+  labels:
+    app: ai-platform-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-platform-operator
+  template:
+    metadata:
+      labels:
+        app: ai-platform-operator
+    spec:
+      serviceAccountName: ai-platform-operator
+      containers:
+      - name: manager
+        image: jamesdhope/ai-platform-operator:latest
+        imagePullPolicy: Always
+        command: ["/manager"]
+        ports:
+        - containerPort: 8080
+          name: health
+          protocol: TCP
+        - containerPort: 8081
+          name: metrics
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
